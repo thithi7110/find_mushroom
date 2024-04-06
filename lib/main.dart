@@ -25,6 +25,7 @@ class _MyAppState extends State<MyApp> {
   // ARセッションとオブジェクトマネージャーを宣言
   late ARSessionManager arSessionManager;
   late ARObjectManager arObjectManager;
+  late ARNode mushroomNode;
 
   // AR設定を初期化
   @override
@@ -63,7 +64,7 @@ class _MyAppState extends State<MyApp> {
     this.arSessionManager.onInitialize(
       showFeaturePoints: false,
       showPlanes: true,
-      customPlaneTexturePath: "Images/triangle.png",
+      customPlaneTexturePath: "assets/Images/triangle.png",
       showWorldOrigin: true,
       handleTaps: false,
     );
@@ -73,16 +74,19 @@ class _MyAppState extends State<MyApp> {
   }
 
   Future<void> _addMushroomModel() async {
-    final ByteData textureBytes = await rootBundle.load('assets/mush1.obj');
-    final Uint8List textureList = textureBytes.buffer.asUint8List();
-    final ARNode node = ARNode(
-      type: NodeType.localGLTF2,
-      uri: "",
-      scale: Vector3(0.2, 0.2, 0.2),
-      position: Vector3(0.0, 0.0, -1.0),
-      rotation: Vector4(1.0, 0.0, 0.0, 0.0),
-      data: {'content': textureList},
-    );
-    arObjectManager.addNode(node);
+    try {
+      debugPrint('Loading 3D model...');
+      mushroomNode = ARNode(
+        type: NodeType.localGLTF2,
+        uri: "assets/pop/gltf/Cake_Pop.gltf",
+        scale: Vector3(0.2, 0.2, 0.2),
+        position: Vector3(0.0, 0.0, -1.0),
+        rotation: Vector4(1.0, 0.0, 0.0, 0.0),
+      );
+      arObjectManager.addNode(mushroomNode);
+      debugPrint('ARNode added to the scene');
+    } catch (e) {
+      debugPrint('Error loading 3D model: $e');
+    }
   }
 }
